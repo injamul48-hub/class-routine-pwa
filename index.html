@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="hi">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6c5ce7">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Class IA Timetable App (Pro)</title>
+    <style>
+        /* --- CSS Variables for Themes --- */
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #00b894;
+            --restore-color: #0984e3;
+            --add-color: #00b894;
+            --delete-color: #ff4757;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --radius-lg: 20px;
+            --radius-md: 15px;
+            --radius-sm: 10px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        /* Theme 1: Default (Playful Purple) */
+        body.theme-default { 
+            --gradient-primary: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            --gradient-accent: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+            --test-highlight: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            --gradient-restore: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            --gradient-add: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+            --gradient-delete: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
+        /* Theme 2: Ocean Blue */
+        body.theme-ocean {
+            --bg-color: #e0f7fa;
+            --text-color: #006064;
+            --card-bg: #ffffff;
+            --primary-color: #0288d1;
+            --secondary-color: #4fc3f7;
+            --accent-color: #00acc1;
+            --restore-color: #0288d1;
+            --add-color: #00acc1;
+            --delete-color: #ff4757;
+            --gradient-primary: linear-gradient(135deg, #0288d1 0%, #4fc3f7 100%);
+            --gradient-accent: linear-gradient(135deg, #00acc1 0%, #80deea 100%);
+            --test-highlight: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            --gradient-restore: linear-gradient(135deg, #0288d1 0%, #4fc3f7 100%);
+            --gradient-add: linear-gradient(135deg, #00acc1 0%, #80deea 100%);
+            --gradient-delete: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
+        /* Theme 3: Forest Green */
+        body.theme-forest {
+            --bg-color: #e8f5e9;
+            --text-color: #1b5e20;
+            --card-bg: #fff;
+            --primary-color: #2e7d32;
+            --secondary-color: #81c784;
+            --accent-color: #43a047;
+            --restore-color: #2e7d32;
+            --add-color: #43a047;
+            --delete-color: #ff4757;
+            --gradient-primary: linear-gradient(135deg, #2e7d32 0%, #81c784 100%);
+            --gradient-accent: linear-gradient(135deg, #43a047 0%, #a5d6a7 100%);
+            --test-highlight: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            --gradient-restore: linear-gradient(135deg, #2e7d32 0%, #81c784 100%);
+            --gradient-add: linear-gradient(135deg, #43a047 0%, #a5d6a7 100%);
+            --gradient-delete: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
+        /* Theme 4: Dark Neon */
+        body.theme-dark {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --card-bg: #1e1e1e;
+            --primary-color: #ff007f;
+            --secondary-color: #bd00ff;
+            --accent-color: #00d2ff;
+            --restore-color: #00d2ff;
+            --add-color: #00ff9d;
+            --delete-color: #ff4757;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --gradient-primary: linear-gradient(135deg, #ff007f 0%, #bd00ff 100%);
+            --gradient-accent: linear-gradient(135deg, #00d2ff 0%, #00ff9d 100%);
+            --test-highlight: linear-gradient(135deg, #ff0000 0%, #ff4444 100%);
+            --gradient-restore: linear-gradient(135deg, #00d2ff 0%, #00ff9d 100%);
+            --gradient-add: linear-gradient(135deg, #00b894 0%, #00ff9d 100%);
+            --gradient-delete: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
+        /* Theme 5: Sunset Orange */
+        body.theme-sunset {
+            --bg-color: #fff3e0;
+            --text-color: #bf360c;
+            --card-bg: #fff;
+            --primary-color: #ff5722;
+            --secondary-color: #ffab91;
+            --accent-color: #ff9800;
+            --restore-color: #ff5722;
+            --add-color: #ff9800;
+            --delete-color: #ff4757;
+            --gradient-primary: linear-gradient(135deg, #ff5722 0%, #ffab91 100%);
+            --gradient-accent: linear-gradient(135deg, #ff9800 0%, #ffcc80 100%);
+            --test-highlight: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            --gradient-restore: linear-gradient(135deg, #ff5722 0%, #ffab91 100%);
+            --gradient-add: linear-gradient(135deg, #ff9800 0%, #ffcc80 100%);
+            --gradient-delete: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+
+        /* --- Global Styles --- */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: var(--transition);
+            user-select: none;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* --- Header --- */
+        header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        h1, h2 { margin: 0; }
+        h1 { 
+            font-size: 1.5rem; 
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        h2 { 
+            font-size: 0.9rem; 
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .today-indicator {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            background: var(--gradient-accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 0 0 8px 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- Controls --- */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            margin: 0 15px 15px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .settings-btn {
+            background: var(--gradient-primary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-btn:hover {
+            transform: rotate(30deg);
+        }
+
+        .edit-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 22px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ddd;
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            transition: var(--transition);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { 
+            background: var(--gradient-accent); 
+        }
+        input:checked + .slider:before { 
+            transform: translateX(23px);
+        }
+
+        /* --- Progress & Action Bar --- */
+        .progress-action-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 0 15px 15px;
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-accent);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* --- Action Buttons --- */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .restore-btn {
+            background: var(--gradient-restore);
+        }
+
+        .add-btn {
+            background: var(--gradient-add);
+        }
+
+        .delete-btn {
+            background: var(--gradient-delete);
+        }
+
+        /* --- Day Navigation --- */
+        .day-nav-container {
+            padding: 0 15px 10px;
+            position: relative;
+        }
+
+        .day-nav {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 5px;
+            gap: 8px;
+            scrollbar-width: none;
+        }
+        .day-nav::-webkit-scrollbar { display: none; }
+
+        .day-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.85rem;
+            min-width: 85px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .day-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        /* --- Timetable Grid --- */
+        .timetable-container {
+            padding: 0 15px 20px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .period-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--accent-color);
+            min-height: 70px;
+        }
+
+        /* Weekly Test Highlight with Blinking Animation */
+        .period-card.test-highlight {
+            background: var(--test-highlight);
+            color: white;
+            border-left-color: #ff0000;
+            animation: blink 2s infinite;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .period-card.hidden {
+            opacity: 0.3;
+            transform: scale(0.95);
+            background: rgba(0,0,0,0.05);
+        }
+
+        .period-card.selected {
+            animation: selectCard 0.5s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes selectCard {
+            0% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                transform: scale(0.95) rotateX(10deg);
+                opacity: 0.7;
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(0.9) rotateX(20deg);
+                height: 0;
+                min-height: 0;
+                margin: 0;
+                padding: 0;
+                border-width: 0;
+            }
+        }
+
+        .period-card.deleting {
+            animation: deleteCard 0.6s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes deleteCard {
+            0% { 
+                opacity: 1;
+                transform: scale(1);
+                background: var(--card-bg);
+            }
+            30% { 
+                transform: scale(1.1);
+                background: var(--gradient-delete);
+                color: white;
+            }
+            70% {
+                transform: scale(0.8) rotate(10deg);
+                opacity: 0.5;
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(0) rotate(30deg);
+                height: 0;
+                min-height: 0;
+                margin: 0;
+                padding: 0;
+                border-width: 0;
+            }
+        }
+
+        .period-number {
+            background: var(--gradient-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .period-details {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .subject {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-color);
+            line-height: 1.3;
+        }
+
+        .teacher {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            display: block;
+            font-weight: 500;
+        }
+
+        /* For Weekly Test - make subject text white */
+        .period-card.test-highlight .subject {
+            color: white;
+            font-weight: 800;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Edit Mode Styles */
+        [contenteditable="true"] {
+            border-bottom: 2px dashed var(--primary-color);
+            outline: none;
+            cursor: text;
+            padding: 2px 0;
+            border-radius: 2px;
+            transition: var(--transition);
+            display: inline-block;
+            min-width: 50px;
+        }
+        
+        [contenteditable="true"]:focus {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .edit-hint {
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            display: none;
+            margin-top: 5px;
+        }
+        
+        body.edit-mode .period-card.hidden {
+            opacity: 0.5;
+            background-color: rgba(221,221,221,0.3);
+            animation: none;
+            pointer-events: auto;
+            transform: none;
+            height: auto;
+            min-height: 70px;
+            margin-bottom: 12px;
+            padding: 15px;
+        }
+        
+        body.edit-mode .period-card {
+            cursor: default;
+        }
+        
+        body.edit-mode .edit-hint {
+            display: block;
+        }
+
+        /* Delete Button on Card */
+        .card-delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--gradient-delete);
+            border: none;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: scale(0.8);
+            z-index: 2;
+        }
+
+        .period-card:hover .card-delete-btn {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .card-delete-btn:hover {
+            transform: scale(1.2) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* --- Completed Message --- */
+        .completed-message {
+            text-align: center;
+            padding: 30px 15px;
+            display: none;
+        }
+
+        .completed-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .confetti {
+            font-size: 2rem;
+            animation: bounce 1s infinite alternate;
+            margin-bottom: 10px;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        /* --- Modals --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: modalAppear 0.3s ease forwards;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalAppear {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-content h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        /* Restore Modal */
+        .day-restore-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .day-option {
+            background: var(--card-bg);
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .day-option:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+            background: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .day-option.selected {
+            background: var(--gradient-restore);
+            color: white;
+            border-color: var(--restore-color);
+        }
+
+        .day-option h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .day-option p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Delete Period Modal */
+        .delete-period-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .delete-period-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .delete-period-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 5px;
+        }
+
+        .delete-period-item:hover {
+            background: rgba(255,71,87,0.1);
+        }
+
+        .delete-period-item.selected {
+            background: var(--gradient-delete);
+            color: white;
+        }
+
+        .delete-period-item .period-number {
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+        }
+
+        .delete-period-item .period-details {
+            flex-grow: 1;
+        }
+
+        .delete-period-item .subject {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .delete-period-item .teacher {
+            font-size: 0.75rem;
+        }
+
+        /* Add Period Modal */
+        .add-period-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* List Manager Styles */
+        .list-manager-section {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .list-manager-section h4 {
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        .list-input-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .list-add-btn {
+            background: var(--add-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            width: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .list-items-container {
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-sm);
+            padding: 5px;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .list-item-delete {
+            color: var(--delete-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Backup Restore Section */
+        .backup-restore-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .backup-restore-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Modal Buttons */
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+        }
+
+        .modal-btn.primary {
+            background: var(--gradient-primary);
+        }
+
+        .modal-btn.delete {
+            background: var(--gradient-delete);
+        }
+
+        .modal-btn.secondary {
+            background: var(--gradient-restore);
+        }
+
+        .modal-btn.cancel {
+            background: #95a5a6;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- Voice Notification --- */
+        .voice-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1001;
+            text-align: center;
+            min-width: 250px;
+            max-width: 90%;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .voice-notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification-text {
+            margin-bottom: 8px;
+        }
+
+        .notification-subtext {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* --- Sound Toggle --- */
+        .sound-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .sound-toggle span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* --- Theme Buttons --- */
+        .theme-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            transition: var(--transition);
+            text-align: left;
+            padding-left: 45px;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .theme-btn::before {
+            content: "✓";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .theme-btn.active::before {
+            opacity: 1;
+        }
+        
+        .theme-btn:hover {
+            transform: translateX(5px);
+        }
+        
+        .setting-action-btn {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: var(--gradient-accent);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-btn {
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: #95a5a6;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        
+        .close-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- Mobile Optimization --- */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.3rem; }
+            h2 { font-size: 0.8rem; }
+            .day-btn { 
+                min-width: 75px; 
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            .period-card { 
+                padding: 12px; 
+                gap: 12px;
+                min-height: 65px;
+            }
+            .period-number {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            .subject {
+                font-size: 1rem;
+            }
+            .teacher {
+                font-size: 0.8rem;
+            }
+            .action-btn {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            .card-delete-btn {
+                width: 22px;
+                height: 22px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            h1 { font-size: 1.2rem; }
+            .day-btn { 
+                min-width: 70px; 
+                padding: 7px 10px;
+                font-size: 0.75rem;
+            }
+            .period-card { 
+                padding: 10px; 
+                gap: 10px;
+                min-height: 60px;
+            }
+            .subject {
+                font-size: 0.95rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* Hide scrollbar for all elements */
+        * {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        *::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari and Opera */
+        }
+
+    </style>
+</head>
+<body class="theme-default">
+
+    <div class="voice-notification" id="voiceNotification">
+        <div class="notification-text" id="notificationText"></div>
+        <div class="notification-subtext">Hindi Voice Alert</div>
+    </div>
+
+    <header>
+        <div class="today-indicator" id="todayIndicator"></div>
+        <h1 contenteditable="true" id="appTitle" onblur="saveHeader()">Class IA Timetable</h1>
+        <h2 contenteditable="true" id="appTeacher" onblur="saveHeader()">Class Teacher: Mrs. Sumona Saha</h2>
+    </header>
+
+    <div class="progress-action-bar">
+        <div class="progress-indicator">
+            <span id="completedCount">0/8</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span>Completed</span>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn restore-btn" onclick="openRestoreModal()">
+                <span>↶</span> Restore
+            </button>
+            <button class="action-btn add-btn" onclick="openAddPeriodModal()">
+                <span>+</span> Add
+            </button>
+            <button class="action-btn delete-btn" onclick="openDeletePeriodModal()">
+                <span>🗑️</span> Delete
+            </button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="edit-toggle">
+            <span>Edit Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="editModeCheck" onchange="toggleEditMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    </div>
+
+    <div class="day-nav-container">
+        <nav class="day-nav" id="dayNav"></nav>
+    </div>
+
+    <div class="timetable-container" id="timetable"></div>
+
+    <div class="completed-message" id="completedMessage">
+        <div class="confetti">🎉</div>
+        <h3>All Classes Completed!</h3>
+        <p>Great job! You've finished all classes for today.</p>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h3>App Settings</h3>
+            
+            <button class="theme-btn active" style="background:linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)" onclick="setTheme('theme-default')">Playful Purple</button>
+            <button class="theme-btn" style="background:linear-gradient(135deg, #0288d1 0%, #4fc3f7 100%)" onclick="setTheme('theme-ocean')">Ocean Blue</button>
+            <button class="theme-btn" style="background:linear-gradient(135deg, #2e7d32 0%, #81c784 100%)" onclick="setTheme('theme-forest')">Forest Green</button>
+            <button class="theme-btn" style="background:linear-gradient(135deg, #ff007f 0%, #bd00ff 100%)" onclick="setTheme('theme-dark')">Dark Neon</button>
+            <button class="theme-btn" style="background:linear-gradient(135deg, #ff5722 0%, #ffab91 100%)" onclick="setTheme('theme-sunset')">Sunset Orange</button>
+            
+            <button class="setting-action-btn" onclick="openManageListsModal()">
+                📝 Manage Subjects & Teachers
+            </button>
+
+            <div class="backup-restore-section">
+                <p style="margin:0 0 10px 0; font-size:0.9rem; font-weight:600;">Data Backup</p>
+                <div class="backup-restore-buttons">
+                    <button class="action-btn" style="background:var(--primary-color)" onclick="backupData()">⬇ Backup</button>
+                    <button class="action-btn" style="background:var(--accent-color)" onclick="document.getElementById('fileInput').click()">⬆ Restore</button>
+                    <input type="file" id="fileInput" style="display: none;" onchange="restoreData(this)" accept=".json">
+                </div>
+            </div>
+
+            <div class="sound-toggle">
+                <span>Voice Alerts</span>
+                <label class="switch">
+                    <input type="checkbox" id="soundToggle" checked onchange="toggleSound()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="close-btn" onclick="closeSettings()">Close Settings</button>
+        </div>
+    </div>
+
+    <div id="manageListsModal" class="modal">
+        <div class="modal-content">
+            <h3>Manage Lists</h3>
+            
+            <div class="list-manager-section">
+                <h4>Subjects</h4>
+                <div class="list-input-group">
+                    <input type="text" id="newSubjectInput" placeholder="New Subject Name">
+                    <button class="list-add-btn" onclick="addSubjectToList()">+</button>
+                </div>
+                <div class="list-items-container" id="subjectsListContainer">
+                    </div>
+            </div>
+
+            <div class="list-manager-section">
+                <h4>Teachers</h4>
+                <div class="list-input-group">
+                    <input type="text" id="newTeacherInput" placeholder="New Teacher Name">
+                    <button class="list-add-btn" onclick="addTeacherToList()">+</button>
+                </div>
+                <div class="list-items-container" id="teachersListContainer">
+                    </div>
+            </div>
+            
+            <button class="close-btn" onclick="closeManageListsModal()">Close Manager</button>
+        </div>
+    </div>
+
+    <div id="restoreModal" class="modal">
+        <div class="modal-content">
+            <h3>Restore Periods</h3>
+            <p style="opacity: 0.8; margin-bottom: 15px; font-size: 0.9rem;">Select a day to restore all periods</p>
+            
+            <div class="day-restore-options" id="dayRestoreOptions">
+                </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn primary" onclick="restoreSelectedDay()">Restore All</button>
+                <button class="modal-btn cancel" onclick="closeRestoreModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addPeriodModal" class="modal">
+        <div class="modal-content">
+            <h3>Add New Period</h3>
+            
+            <div class="add-period-form">
+                <div class="form-group">
+                    <label for="periodDay">Select Day:</label>
+                    <select id="periodDay">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="periodNumber">Period Number:</label>
+                    <input type="number" id="periodNumber" min="1" max="20" value="9" placeholder="Enter period number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="periodSubjectSelect">Subject:</label>
+                    <select id="periodSubjectSelect">
+                        </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="periodTeacherSelect">Teacher:</label>
+                    <select id="periodTeacherSelect">
+                         </select>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn primary" onclick="addNewPeriod()">Add Period</button>
+                <button class="modal-btn cancel" onclick="closeAddPeriodModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deletePeriodModal" class="modal">
+        <div class="modal-content">
+            <h3>Delete Period</h3>
+            <p style="opacity: 0.8; margin-bottom: 15px; font-size: 0.9rem;">Select a period to delete permanently</p>
+            
+            <div class="form-group">
+                <label for="deleteDaySelect">Select Day:</label>
+                <select id="deleteDaySelect" onchange="loadPeriodsForDeletion()">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                </select>
+            </div>
+            
+            <div class="delete-period-list" id="deletePeriodList">
+                </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn delete" onclick="deleteSelectedPeriod()">Delete Period</button>
+                <button class="modal-btn cancel" onclick="closeDeletePeriodModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Initial Data ---
+        const defaultData = {
+            Monday: [
+                { id: 1, subject: "Test (All Subjects)", teacher: "Weekly Test", hidden: false },
+                { id: 2, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: 3, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 4, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 5, subject: "English", teacher: "(RH)", hidden: false },
+                { id: 6, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: 7, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: "S", subject: "AS", teacher: "(PRC)", hidden: false }
+            ],
+            Tuesday: [
+                { id: 1, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 2, subject: "Hindi", teacher: "(DK)", hidden: false },
+                { id: 3, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 4, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 5, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 6, subject: "EVS / Computer", teacher: "(RK / KB)", hidden: false },
+                { id: 7, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: "S", subject: "English", teacher: "(Sumona)", hidden: false }
+            ],
+            Wednesday: [
+                { id: 1, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 2, subject: "Hindi", teacher: "(DK)", hidden: false },
+                { id: 3, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 4, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 5, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 6, subject: "Computer / EVS", teacher: "(KB / RK)", hidden: false },
+                { id: 7, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: "S", subject: "CCA", teacher: "(Sanjana)", hidden: false }
+            ],
+            Thursday: [
+                { id: 1, subject: "Computer", teacher: "(KB)", hidden: false },
+                { id: 2, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 3, subject: "Hindi", teacher: "(RH)", hidden: false },
+                { id: 4, subject: "Drawing", teacher: "(ARM)", hidden: false },
+                { id: 5, subject: "Computer", teacher: "(KB)", hidden: false },
+                { id: 6, subject: "English", teacher: "(Sumona)", hidden: false },
+                { id: 7, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: "S", subject: "CCA", teacher: "(Sanjana)", hidden: false }
+            ],
+            Friday: [
+                { id: 1, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: 2, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: 3, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: 4, subject: "Drawing", teacher: "(ARM)", hidden: false },
+                { id: 5, subject: "Computer", teacher: "(KB)", hidden: false },
+                { id: 6, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: 7, subject: "Maths", teacher: "(RH)", hidden: false },
+                { id: "S", subject: "---", teacher: "", hidden: false }
+            ],
+            Saturday: [
+                { id: 1, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 2, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: 3, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: 4, subject: "EVS", teacher: "(RK)", hidden: false },
+                { id: 5, subject: "Computer", teacher: "(KB)", hidden: false },
+                { id: 6, subject: "Maths", teacher: "(PRC)", hidden: false },
+                { id: 7, subject: "AS", teacher: "(PRC)", hidden: false },
+                { id: "S", subject: "---", teacher: "", hidden: false }
+            ]
+        };
+
+        const defaultLists = {
+            subjects: ["Maths", "English", "Hindi", "EVS", "Computer", "Drawing", "AS", "CCA", "Test (All Subjects)"],
+            teachers: ["Sumona", "RH", "DK", "PRC", "RK", "KB", "Sanjana", "ARM", "Weekly Test"]
+        };
+
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const hindiPeriods = [
+            "पहला पीरियड",
+            "दूसरा पीरियड", 
+            "तीसरा पीरियड",
+            "चौथा पीरियड",
+            "पाँचवाँ पीरियड",
+            "छठा पीरियड",
+            "सातवाँ पीरियड",
+            "आठवाँ पीरियड"
+        ];
+
+        const hindiSubjects = {
+            "Maths": "गणित",
+            "English": "अंग्रेज़ी",
+            "Hindi": "हिंदी",
+            "EVS": "पर्यावरण अध्ययन",
+            "Computer": "कंप्यूटर",
+            "Drawing": "ड्राइंग",
+            "AS": "एक्टिविटी सेशन",
+            "CCA": "को-करिकुलर एक्टिविटी",
+            "Test (All Subjects)": "सभी विषयों की टेस्ट"
+        };
+
+        let currentDay = "Monday";
+        let isEditMode = false;
+        let timetableData = {};
+        let listData = {};
+        let soundEnabled = true;
+        let selectedDayToRestore = null;
+        let selectedPeriodToDelete = null;
+        let selectedDayForDelete = "Monday";
+
+        // --- Initialization ---
+        function init() {
+            // Load Timetable Data
+            const storedData = localStorage.getItem('tt_data');
+            timetableData = storedData ? JSON.parse(storedData) : JSON.parse(JSON.stringify(defaultData));
+
+            // Load List Data
+            const storedLists = localStorage.getItem('tt_lists');
+            listData = storedLists ? JSON.parse(storedLists) : JSON.parse(JSON.stringify(defaultLists));
+
+            // Load Headers
+            if(localStorage.getItem('tt_title')) document.getElementById('appTitle').innerText = localStorage.getItem('tt_title');
+            if(localStorage.getItem('tt_teacher')) document.getElementById('appTeacher').innerText = localStorage.getItem('tt_teacher');
+
+            // Load Theme
+            const storedTheme = localStorage.getItem('tt_theme') || 'theme-default';
+            document.body.className = storedTheme;
+            updateThemeButtons(storedTheme);
+
+            // Load sound preference
+            soundEnabled = localStorage.getItem('tt_sound') !== 'false';
+            document.getElementById('soundToggle').checked = soundEnabled;
+
+            // Determine Today
+            const todayIndex = new Date().getDay();
+            if (todayIndex > 0 && todayIndex < 7) {
+                currentDay = days[todayIndex - 1];
+            } else {
+                currentDay = "Monday";
+            }
+
+            // Show today indicator
+            document.getElementById('todayIndicator').textContent = `Today: ${currentDay}`;
+
+            renderDays();
+            renderTimetable();
+            updateProgress();
+            showInitialNotification();
+        }
+
+        // --- Rendering ---
+        function renderDays() {
+            const nav = document.getElementById('dayNav');
+            nav.innerHTML = '';
+            days.forEach(day => {
+                const btn = document.createElement('button');
+                btn.className = `day-btn ${day === currentDay ? 'active' : ''}`;
+                btn.textContent = day;
+                btn.onclick = () => {
+                    currentDay = day;
+                    renderDays();
+                    renderTimetable();
+                    updateProgress();
+                    showDayChangeNotification();
+                };
+                nav.appendChild(btn);
+            });
+        }
+
+        function renderTimetable() {
+            const container = document.getElementById('timetable');
+            container.innerHTML = '';
+            
+            const periods = timetableData[currentDay];
+            let allHidden = true;
+
+            periods.forEach((period, index) => {
+                const card = document.createElement('div');
+                card.className = `period-card ${period.hidden ? 'hidden' : ''}`;
+                
+                // Add test highlight for Monday first period
+                if (currentDay === "Monday" && period.id === 1 && period.subject.includes("Test")) {
+                    card.classList.add('test-highlight');
+                }
+                
+                if (!period.hidden) allHidden = false;
+                
+                card.onclick = () => handleCardClick(index, card);
+
+                const editableAttr = isEditMode ? 'contenteditable="true"' : '';
+
+                card.innerHTML = `
+                    <div class="period-number">${period.id}</div>
+                    <div class="period-details">
+                        <span class="subject" ${editableAttr} onblur="updateData(${index}, 'subject', this.innerText)">${period.subject}</span>
+                        <span class="teacher" ${editableAttr} onblur="updateData(${index}, 'teacher', this.innerText)">${period.teacher}</span>
+                        <div class="edit-hint">Click text to edit</div>
+                    </div>
+                    <button class="card-delete-btn" onclick="event.stopPropagation(); deletePeriodFromCard(${index})">×</button>
+                `;
+                container.appendChild(card);
+            });
+
+            // Show completion message if all hidden
+            if (!isEditMode && allHidden) {
+                document.getElementById('completedMessage').style.display = 'block';
+                container.style.display = 'none';
+            } else {
+                document.getElementById('completedMessage').style.display = 'none';
+                container.style.display = 'block';
+            }
+        }
+
+        // Update progress indicator
+        function updateProgress() {
+            const periods = timetableData[currentDay];
+            const completed = periods.filter(p => p.hidden).length;
+            const total = periods.length;
+            
+            document.getElementById('completedCount').textContent = `${completed}/${total}`;
+            document.getElementById('progressFill').style.width = `${(completed / total) * 100}%`;
+        }
+
+        // --- Main Logic ---
+        function handleCardClick(index, cardElement) {
+            if (isEditMode) return;
+
+            const period = timetableData[currentDay][index];
+            
+            // Mark as selected and animate out
+            cardElement.classList.add('selected');
+            
+            // After animation completes, hide the period
+            setTimeout(() => {
+                period.hidden = true;
+                saveData();
+                renderTimetable();
+                updateProgress();
+                showPeriodNotification(index, period);
+            }, 500);
+        }
+
+        function updateData(index, field, value) {
+            timetableData[currentDay][index][field] = value;
+            saveData();
+        }
+
+        function saveHeader() {
+            localStorage.setItem('tt_title', document.getElementById('appTitle').innerText);
+            localStorage.setItem('tt_teacher', document.getElementById('appTeacher').innerText);
+        }
+
+        function saveData() {
+            localStorage.setItem('tt_data', JSON.stringify(timetableData));
+            localStorage.setItem('tt_lists', JSON.stringify(listData));
+        }
+
+        function toggleEditMode() {
+            isEditMode = document.getElementById('editModeCheck').checked;
+            if (isEditMode) {
+                document.body.classList.add('edit-mode');
+            } else {
+                document.body.classList.remove('edit-mode');
+            }
+            renderTimetable();
+            updateProgress();
+        }
+
+        // --- Backup and Restore ---
+        function backupData() {
+            const fullData = {
+                timetable: timetableData,
+                lists: listData,
+                title: document.getElementById('appTitle').innerText,
+                teacher: document.getElementById('appTeacher').innerText,
+                theme: localStorage.getItem('tt_theme')
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullData));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "timetable_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function restoreData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.timetable) localStorage.setItem('tt_data', JSON.stringify(data.timetable));
+                    if (data.lists) localStorage.setItem('tt_lists', JSON.stringify(data.lists));
+                    if (data.title) localStorage.setItem('tt_title', data.title);
+                    if (data.teacher) localStorage.setItem('tt_teacher', data.teacher);
+                    if (data.theme) localStorage.setItem('tt_theme', data.theme);
+                    
+                    alert("Data restored successfully! App will reload.");
+                    location.reload();
+                } catch (err) {
+                    alert("Error reading file: " + err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- List Manager ---
+        function openManageListsModal() {
+            document.getElementById('manageListsModal').style.display = 'flex';
+            document.getElementById('settingsModal').style.display = 'none'; // Close settings
+            renderListManager();
+        }
+
+        function closeManageListsModal() {
+            document.getElementById('manageListsModal').style.display = 'none';
+        }
+
+        function renderListManager() {
+            // Render Subjects
+            const subContainer = document.getElementById('subjectsListContainer');
+            subContainer.innerHTML = '';
+            listData.subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<span>${sub}</span> <button class="list-item-delete" onclick="removeSubject('${sub}')">×</button>`;
+                subContainer.appendChild(div);
+            });
+
+            // Render Teachers
+            const teaContainer = document.getElementById('teachersListContainer');
+            teaContainer.innerHTML = '';
+            listData.teachers.forEach(tea => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<span>${tea}</span> <button class="list-item-delete" onclick="removeTeacher('${tea}')">×</button>`;
+                teaContainer.appendChild(div);
+            });
+        }
+
+        function addSubjectToList() {
+            const val = document.getElementById('newSubjectInput').value.trim();
+            if (val && !listData.subjects.includes(val)) {
+                listData.subjects.push(val);
+                document.getElementById('newSubjectInput').value = '';
+                saveData();
+                renderListManager();
+            }
+        }
+
+        function removeSubject(val) {
+            listData.subjects = listData.subjects.filter(item => item !== val);
+            saveData();
+            renderListManager();
+        }
+
+        function addTeacherToList() {
+            const val = document.getElementById('newTeacherInput').value.trim();
+            if (val && !listData.teachers.includes(val)) {
+                listData.teachers.push(val);
+                document.getElementById('newTeacherInput').value = '';
+                saveData();
+                renderListManager();
+            }
+        }
+
+        function removeTeacher(val) {
+            listData.teachers = listData.teachers.filter(item => item !== val);
+            saveData();
+            renderListManager();
+        }
+
+        // --- Delete Period System ---
+        function openDeletePeriodModal() {
+            const modal = document.getElementById('deletePeriodModal');
+            selectedDayForDelete = currentDay;
+            document.getElementById('deleteDaySelect').value = currentDay;
+            loadPeriodsForDeletion();
+            modal.style.display = 'flex';
+        }
+
+        function loadPeriodsForDeletion() {
+            selectedDayForDelete = document.getElementById('deleteDaySelect').value;
+            const periods = timetableData[selectedDayForDelete];
+            const container = document.getElementById('deletePeriodList');
+            container.innerHTML = '';
+            
+            selectedPeriodToDelete = null;
+            
+            periods.forEach((period, index) => {
+                const item = document.createElement('div');
+                item.className = 'delete-period-item';
+                item.onclick = () => selectPeriodForDeletion(index, item);
+                
+                item.innerHTML = `
+                    <div class="period-number">${period.id}</div>
+                    <div class="period-details">
+                        <span class="subject">${period.subject}</span>
+                        <span class="teacher">${period.teacher}</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function selectPeriodForDeletion(index, element) {
+            // Remove selection from all items
+            document.querySelectorAll('.delete-period-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select clicked item
+            element.classList.add('selected');
+            selectedPeriodToDelete = index;
+        }
+
+        function deleteSelectedPeriod() {
+            if (selectedPeriodToDelete === null) {
+                showNotification("Please select a period to delete", "Select period first");
+                return;
+            }
+            
+            const day = selectedDayForDelete;
+            const period = timetableData[day][selectedPeriodToDelete];
+            
+            // Remove period from array
+            timetableData[day].splice(selectedPeriodToDelete, 1);
+            
+            saveData();
+            
+            // If we're on the same day, re-render
+            if (day === currentDay) {
+                renderTimetable();
+                updateProgress();
+            }
+            
+            // Show notification
+            showNotification(
+                `${day} का ${period.id}वाँ पीरियड हटाया गया`,
+                "Period deleted permanently"
+            );
+            
+            closeDeletePeriodModal();
+        }
+
+        function deletePeriodFromCard(index) {
+            const day = currentDay;
+            const period = timetableData[day][index];
+            
+            // Show confirmation
+            if (confirm(`Are you sure you want to delete Period ${period.id}: ${period.subject}?`)) {
+                // Get card element
+                const cards = document.querySelectorAll('.period-card');
+                if (cards[index]) {
+                    cards[index].classList.add('deleting');
+                    
+                    // Wait for animation to complete
+                    setTimeout(() => {
+                        // Remove period from array
+                        timetableData[day].splice(index, 1);
+                        saveData();
+                        renderTimetable();
+                        updateProgress();
+                        
+                        // Show notification
+                        showNotification(
+                            `${day} का ${period.id}वाँ पीरियड हटाया गया`,
+                            "Period deleted permanently"
+                        );
+                    }, 600);
+                }
+            }
+        }
+
+        function closeDeletePeriodModal() {
+            document.getElementById('deletePeriodModal').style.display = 'none';
+            selectedPeriodToDelete = null;
+        }
+
+        // --- Restore System ---
+        function openRestoreModal() {
+            const modal = document.getElementById('restoreModal');
+            const optionsContainer = document.getElementById('dayRestoreOptions');
+            optionsContainer.innerHTML = '';
+            
+            selectedDayToRestore = null;
+            
+            // Create day options
+            days.forEach(day => {
+                const periods = timetableData[day];
+                const hiddenCount = periods.filter(p => p.hidden).length;
+                const totalCount = periods.length;
+                
+                const option = document.createElement('div');
+                option.className = 'day-option';
+                option.onclick = () => selectDayToRestore(day, option);
+                
+                option.innerHTML = `
+                    <h4>${day}</h4>
+                    <p>${hiddenCount}/${totalCount} periods hidden</p>
+                `;
+                
+                optionsContainer.appendChild(option);
+            });
+            
+            modal.style.display = 'flex';
+        }
+
+        function selectDayToRestore(day, element) {
+            // Remove selection from all options
+            document.querySelectorAll('.day-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select clicked option
+            element.classList.add('selected');
+            selectedDayToRestore = day;
+        }
+
+        function restoreSelectedDay() {
+            if (!selectedDayToRestore) {
+                showNotification("Please select a day first", "Select day to restore");
+                return;
+            }
+            
+            // Restore all periods for selected day
+            timetableData[selectedDayToRestore].forEach(period => {
+                period.hidden = false;
+            });
+            
+            saveData();
+            
+            // If we're on the same day, re-render
+            if (selectedDayToRestore === currentDay) {
+                renderTimetable();
+                updateProgress();
+            }
+            
+            // Show notification
+            showNotification(
+                `${selectedDayToRestore} के सभी पीरियड वापस आ गए`,
+                "All periods restored successfully"
+            );
+            
+            closeRestoreModal();
+        }
+
+        function closeRestoreModal() {
+            document.getElementById('restoreModal').style.display = 'none';
+        }
+
+        // --- Add Period System ---
+        function openAddPeriodModal() {
+            const modal = document.getElementById('addPeriodModal');
+            
+            // Set current day as default
+            document.getElementById('periodDay').value = currentDay;
+            
+            // Populate Dropdowns
+            const subSelect = document.getElementById('periodSubjectSelect');
+            subSelect.innerHTML = '<option value="">Select Subject</option>';
+            listData.subjects.forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.text = sub;
+                subSelect.appendChild(opt);
+            });
+
+            const teaSelect = document.getElementById('periodTeacherSelect');
+            teaSelect.innerHTML = '<option value="">Select Teacher</option>';
+            listData.teachers.forEach(tea => {
+                const opt = document.createElement('option');
+                opt.value = tea;
+                opt.text = tea;
+                teaSelect.appendChild(opt);
+            });
+            
+            // Auto-generate next period number for current day
+            const periods = timetableData[currentDay];
+            let nextNumber = periods.length + 1;
+            
+            const numbers = periods.map(p => {
+                if (typeof p.id === 'number') return p.id;
+                return 0;
+            });
+            const maxNumber = Math.max(...numbers);
+            if (numbers.length > 0) nextNumber = maxNumber + 1;
+            
+            document.getElementById('periodNumber').value = nextNumber;
+            
+            modal.style.display = 'flex';
+        }
+
+        function addNewPeriod() {
+            const day = document.getElementById('periodDay').value;
+            const number = parseInt(document.getElementById('periodNumber').value);
+            const subject = document.getElementById('periodSubjectSelect').value;
+            const teacher = document.getElementById('periodTeacherSelect').value;
+            
+            if (!subject) {
+                showNotification("Please select a subject", "Subject is required");
+                return;
+            }
+            
+            if (!number || number < 1) {
+                showNotification("Please enter a valid period number", "Invalid period number");
+                return;
+            }
+            
+            // Check if period number already exists
+            const existingPeriod = timetableData[day].find(p => p.id === number);
+            if (existingPeriod) {
+                showNotification("Period number already exists", "Please choose a different number");
+                return;
+            }
+            
+            // Create new period
+            const newPeriod = {
+                id: number,
+                subject: subject,
+                teacher: teacher ? `(${teacher})` : "", // Auto-add brackets for style
+                hidden: false
+            };
+            
+            // Add to timetable
+            timetableData[day].push(newPeriod);
+            
+            // Sort periods by ID
+            timetableData[day].sort((a, b) => {
+                const aNum = typeof a.id === 'number' ? a.id : Infinity;
+                const bNum = typeof b.id === 'number' ? b.id : Infinity;
+                return aNum - bNum;
+            });
+            
+            saveData();
+            
+            // If we're on the same day, re-render
+            if (day === currentDay) {
+                renderTimetable();
+                updateProgress();
+            }
+            
+            // Show notification
+            showNotification(
+                `${day} में नया पीरियड जोड़ा गया: ${subject}`,
+                "New period added successfully"
+            );
+            
+            closeAddPeriodModal();
+        }
+
+        function closeAddPeriodModal() {
+            document.getElementById('addPeriodModal').style.display = 'none';
+        }
+
+        // --- Voice Notifications ---
+        function showInitialNotification() {
+            if (!soundEnabled) return;
+            
+            const now = new Date();
+            const hour = now.getHours();
+            const greeting = hour < 12 ? "शुभ प्रभात" : hour < 16 ? "शुभ दोपहर" : "शुभ संध्या";
+            
+            showNotification(
+                `${greeting}! ${currentDay} का रूटीन।`,
+                "Click on period to mark as completed"
+            );
+        }
+
+        function showDayChangeNotification() {
+            if (!soundEnabled) return;
+            
+            showNotification(
+                `${currentDay} का रूटीन।`,
+                "Periods completed will be marked automatically."
+            );
+        }
+
+        function showPeriodNotification(index, period) {
+            if (!soundEnabled) return;
+            
+            const hindiPeriod = hindiPeriods[index] || `Period ${index + 1}`;
+            const subjectName = period.subject.split('(')[0].trim();
+            const hindiSubject = hindiSubjects[subjectName] || subjectName;
+            
+            const message = `${hindiPeriod} पूरा हुआ: ${hindiSubject}`;
+            
+            showNotification(message, "Use restore option to bring back");
+        }
+
+        function showNotification(text, subtext = "") {
+            const notification = document.getElementById('voiceNotification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = text;
+            
+            // Speak the notification
+            speakHindiNotification(text);
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function speakHindiNotification(text) {
+            if (!soundEnabled) return;
+            
+            try {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'hi-IN';
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    
+                    const voices = speechSynthesis.getVoices();
+                    const hindiVoice = voices.find(voice => 
+                        voice.lang === 'hi-IN' || voice.lang.startsWith('hi')
+                    );
+                    
+                    if (hindiVoice) {
+                        utterance.voice = hindiVoice;
+                    }
+                    
+                    speechSynthesis.speak(utterance);
+                }
+            } catch (e) {
+                console.log("Speech synthesis not available");
+            }
+        }
+
+        // --- Settings ---
+        function openSettings() { 
+            document.getElementById('settingsModal').style.display = 'flex'; 
+        }
+        
+        function closeSettings() { 
+            document.getElementById('settingsModal').style.display = 'none'; 
+        }
+
+        function updateThemeButtons(activeTheme) {
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            themeBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(activeTheme)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function setTheme(themeName) {
+            document.body.className = themeName;
+            if (isEditMode) document.body.classList.add('edit-mode');
+            localStorage.setItem('tt_theme', themeName);
+            updateThemeButtons(themeName);
+        }
+
+        function toggleSound() {
+            soundEnabled = document.getElementById('soundToggle').checked;
+            localStorage.setItem('tt_sound', soundEnabled);
+        }
+
+        // Initialize voices for speech synthesis
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => {
+                // Voices loaded
+            };
+        }
+
+        // Initialize App
+        init();
+
+    </script>
+    <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker Registered"));
+}
+</script>
+</body>
+</html>
